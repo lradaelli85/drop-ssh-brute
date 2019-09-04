@@ -27,7 +27,9 @@ with this command we will create a set with a entries lifetime of 24 hours (8640
 
 with this rule we will drop connections coming from IPs stored in ssh_drop set
 
-`iptables -A INPUT -i eth0 -p tcp --dport 22 -m conntrack --ctstate NEW -m recent --update --reap --seconds 60 --hitcount 5 --name SSH-CHECK --rsource -j SET --add-set ssh_drop src`
+```
+iptables -A INPUT -i eth0 -p tcp --dport 22 -m conntrack --ctstate NEW -m recent --update --reap --seconds 60 --hitcount 5 --name SSH-CHECK --rsource -j SET --add-set ssh_drop src
+```
 
 with this rule we will inspect each new SSH connection coming from eth0 interface and if the same source IP opens 5 connections in 1 minute,add it to ssh_drop set
 
