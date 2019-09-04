@@ -21,7 +21,7 @@ iptables -A INPUT -i ens3 -p tcp -m tcp --dport 22 -m conntrack --ctstate NEW -m
 
 `ipset create ssh_drop hash:ip timeout 86400`
 
-with this command we will create a set with a entries lifetime of 24 hours.After 24 hours expired entries are automatically removed
+with this command we will create a set with a entries lifetime of 24 hours (86400 seconds).After 24 hours expired entries are automatically removed
 
 `iptables -A INPUT -m set --match-set ssh_drop src -j DROP`
 
