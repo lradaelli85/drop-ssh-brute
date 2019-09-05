@@ -13,8 +13,8 @@ With this script no logs are parsed to retrieve attacker IP,everything is done u
 ```
 ipset create ssh_drop hash:ip timeout 86400
 iptables -A INPUT -m set --match-set ssh_drop src -j DROP
-iptables -A INPUT -i ens3 -p tcp --dport 22 -m conntrack --ctstate NEW -m recent --update --reap --seconds 60 --hitcount 5 --name SSH-CHECK --rsource -j SET --add-set ssh_drop src
-iptables -A INPUT -i ens3 -p tcp -m tcp --dport 22 -m conntrack --ctstate NEW -m recent --name SSH-CHECK --set -j ACCEPT
+iptables -A INPUT -i eth0 -p tcp --dport 22 -m conntrack --ctstate NEW -m recent --update --reap --seconds 60 --hitcount 5 --name SSH-CHECK --rsource -j SET --add-set ssh_drop src
+iptables -A INPUT -i eth0 -p tcp -m tcp --dport 22 -m conntrack --ctstate NEW -m recent --name SSH-CHECK --set -j ACCEPT
 ```
 
 ### Explanation
@@ -37,4 +37,17 @@ with this rule we will inspect each new SSH connection coming from eth0 interfac
 
 with this rule we will accept new connections from IPs that are below the threshold (less than 5 connections in 1 minute)
 
+
+### Drop hosts (*forever*) that open more than 5 SSH connections in 1 minute
+
+```
+ipset create ssh_drop hash:ip
+iptables -A INPUT -m set --match-set ssh_drop src -j DROP
+iptables -A INPUT -i eth0 -p tcp --dport 22 -m conntrack --ctstate NEW -m recent --update --reap --seconds 60 --hitcount 5 --name SSH-CHECK --rsource -j SET --add-set ssh_drop src
+iptables -A INPUT -i eth0 -p tcp -m tcp --dport 22 -m conntrack --ctstate NEW -m recent --name SSH-CHECK --set -j ACCEPT
+```
+
+### Explanation
+
+here same commands of previous example are used,the difference is that the set has no timeout
 
